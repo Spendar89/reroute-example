@@ -4,9 +4,8 @@ import { ERRORS } from './constants';
 import * as plugins from './plugins';
 
 export default class Dispatcher {
-  constructor ({ store = {}, actions = {}, config = { debug: true } }) {
+  constructor ({ store = {}, config = { debug: true } }) {
     this.store = store;
-    this.actions = actions;
     this.config = config;
     this.registeredPlugins = this.registerPlugins();
   };
@@ -17,16 +16,12 @@ export default class Dispatcher {
 
   _currentActionName: false;
 
-  async _handleRemoteAction (remote, local, input) {
+  async handleAsyncAction (remote, input) {
     const output = await remote(this.store, input)
-    const _input = { ...input, ...output };
-
-    if (!local) return _input;
-
-    return this._handleLocalAction(local, _input, true);
+    return { ...input, ...output };
   };
 
-  _handleLocalAction (local, input, hasRemote) {
+  handleSyncAction (local, input) {
     const output = local(this.store, input);
 
     return { ...input, ...output };
@@ -34,31 +29,22 @@ export default class Dispatcher {
 
 // TODO: Conditional Actions will become custom dispatch functions
 
-  async dispatch ({ key, payload = {} }) {
-    let { local={}, remote={} } = this.actions || {};
-    let actionNames = this.handlers[key];
+  async dispatch ({ key, type='react', payload = {} }) {
+    let actions = plugins[type].handlers[key];
     let input = payload;
 
     async function handleAction (i) {
-      const actionName = actionNames[i];
-      const localAction = local[actionName];
-      const remoteAction = remote[actionName];
+      const action = actions[i];
+      const { asyncAction } = action;
+      const hasNext = i + 1 < actions.length;
 
-      if (localAction) {
-        input = this._handleLocalAction(localAction, input);
-      };
+      const output = asyncAction
+        ? await asyncAction(this.store, input)
+        : action(this.store, input);
 
-      if (remoteAction) {
-        input = await this._handleRemoteAction(
-          remoteAction,
-          localAction,
-          input
-        );
-      };
+      input = { ...input, ...output };
 
-      if (i < actionNames.length) {
-        requestAnimationFrame(handleAction.bind(this, i+1));
-      };
+      if (hasNext) requestAnimationFrame(handleAction.bind(this, i + 1));
 
       // TODO: mutate store and commit/fire change event
     };
