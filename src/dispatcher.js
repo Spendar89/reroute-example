@@ -3,57 +3,38 @@ import moment from 'moment';
 import { ERRORS } from './constants';
 import * as plugins from './plugins';
 
+// TODO: make conditional handler custom dispatch functions
+
 export default class Dispatcher {
   constructor ({ store = {}, config = { debug: true } }) {
     this.store = store;
     this.config = config;
-    this.registeredPlugins = this.registerPlugins();
+    this.hasRegisterPlugins = this.registerPlugins();
   };
 
-  _history: [];
+  dispatch ({ key, type='react', payload = {} }) {
+    const handler = plugins[type].handlers[key];
+    const ctx = { payload };
+    let store = this.store;
 
-  _logs: [];
+    async function handle (e, i = 0) {
+      const hasNext =  i + 1 < handler.length;
+      const handleNext = handle.bind(this, e, i + 1);
+      const getOutput = async () => {
+        const o = handler[i](store, ctx);
+        return o.then ? await o : o;
+      };
 
-  _currentActionName: false;
+      store = { ...store, ...(await getOutput()) };
 
-  async handleAsyncAction (remote, input) {
-    const output = await remote(this.store, input)
-    return { ...input, ...output };
-  };
-
-  handleSyncAction (local, input) {
-    const output = local(this.store, input);
-
-    return { ...input, ...output };
-  };
-
-// TODO: Conditional Actions will become custom dispatch functions
-
-  async dispatch ({ key, type='react', payload = {} }) {
-    let actions = plugins[type].handlers[key];
-    let input = payload;
-
-    async function handleAction (i) {
-      const action = actions[i];
-      const { asyncAction } = action;
-      const hasNext = i + 1 < actions.length;
-
-      const output = asyncAction
-        ? await asyncAction(this.store, input)
-        : action(this.store, input);
-
-      input = { ...input, ...output };
-
-      if (hasNext) requestAnimationFrame(handleAction.bind(this, i + 1));
-
-      // TODO: mutate store and commit/fire change event
+      hasNext && requestAnimationFrame(handleNext);
     };
 
-    requestAnimationFrame(handleAction.bind(this, 0));
+    requestAnimationFrame(handle);
   };
 
   registerPlugins () {
-    if (this.registeredPlugins) return false;
+    if (this.hasRegisterPlugins) return false;
 
     for (let name in plugins) {
       const { register } = plugins[name];
@@ -64,41 +45,5 @@ export default class Dispatcher {
     };
 
     return true;
-  };
-
-  _record () {
-    const serialized = this.store.get();
-    const history = this._history.push(serialized);
-
-    return history;
-  };
-
-  timeTravel (i) {
-    const state = this._history[i];
-
-    if (!state) return false;
-
-    this.store = state;
-
-    return this.store.get()
-  };
-
-  /**
-   *
-   * log
-   *
-   * logger function, used for debugging in dev console.
-   * NOTE: Can be turned off via dispatcher.debug = false
-   *
-   */
-  log (event, actions, input) {
-    const entry = { event, input };
-
-    //Util.styleLogHeader(`Handling Event ${this._logs.length}`)
-    //Util.styleLogObject(entry)
-    //Util.styleLogHeader('actionName execution times:')
-    //console.log("\n");
-
-    this._logs.push(entry);
   };
 };

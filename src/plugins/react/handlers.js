@@ -1,37 +1,40 @@
 import 'babel-polyfill';
 
-function wrap (asyncAction) {
-  return { asyncAction };
+function wrap (asyncMiddleware) {
+  return { asyncMiddleware };
 };
 
 export default {
-  'clickedTestButton1': [
-    (store, payload) => {
-      console.info('action 0', payload);
+  clickedTestButton: [
+    (store, ctx) => {
+      ctx.finished = false;
 
-      return { started: true };
+      return store;
     },
-    wrap (
-      async (store, payload) => {
-        await new Promise(r => setTimeout(r, payload.ms));
 
-        console.info('action 1', payload);
+    //wrap (
+      async (store, ctx) => {
+        const { ms } = ctx.payload;
 
-        return { wrapped: true };
-      }
-    ),
-    (store, payload) => {
-      console.info('action 2', payload);
+        await new Promise(r => setTimeout(r, ms));
 
-      return { finished: true };
+        ctx.finished = true;
+
+        return { ...store, ...{ yo: 'sup' } };
+      },
+    //),
+
+    (store, ctx) => {
+      console.log(ctx.finished);
+
+      return store;
     }
   ],
 
-  'clickedTestButton2': [
-    (store, payload) => {
-      console.info('test action 2 initiated!!!')
-
-      return { testedTwo: true };
+  submittedTestForm: [
+    (store) => {
+      return store;
     }
   ]
 };
+
