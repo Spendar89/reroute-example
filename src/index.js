@@ -5,8 +5,7 @@ import Root from './components/root';
 import * as plugins from './plugins';
 import Dispatcher from './Dispatcher'
 
-global.plugins = plugins;
-global.Dispatcher = Dispatcher;
+global.dispatcher = new Dispatcher({});
 
 const app = _root => <AppContainer><_root/></AppContainer>;
 
