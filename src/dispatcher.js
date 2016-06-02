@@ -1,16 +1,19 @@
 import 'babel-polyfill';
-import { Map } from 'immutable';
+import { createClass } from 'react';
+import $$ from 'immutable';
 import moment from 'moment';
 import { ERRORS } from './constants';
 import * as plugins from './plugins';
 import store from './store';
+
+window.$$ = $$;
 
 // TODO: make conditional handler custom dispatch functions
 
 export default class Dispatcher {
   constructor (opts) {
     this.opts = opts;
-    this.store = Map(store);
+    this.store = $$.Map(store);
     this.isRegistered = this.registerPlugins();
   };
 
@@ -55,4 +58,41 @@ export default class Dispatcher {
 
     return true;
   };
+
+  // TODO: move to separate file, perhaps in
+  // react plugin dir?
+  connectComponent(Component, mapping) {
+    const store = this.store;
+
+    return createClass({
+      getInitialState() {
+        return $$.Map();
+      },
+
+      setStateFromStore() {
+        const newState = {};
+
+        for (let key in mapping) {
+          const path = mapping[key];
+          newState[key] = store.getIn(path);
+        };
+
+        this.setState(this.state.merge(newState));
+      },
+
+      componentDidMount () {
+        //store.subscribe(this.setStateFromStore);
+        this.setStateFromStore();
+      },
+
+      shouldComponentUpdate (_, nextState) {
+       return this.state !== nextState;
+      },
+
+      render () {
+        return <Component { ...this.state }/>
+      }
+    });
+  };
+
 };
