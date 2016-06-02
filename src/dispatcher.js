@@ -15,16 +15,14 @@ export default class Dispatcher {
   dispatch (event) {
     const handler = this.getHandler(event);
     const ctx = { payload: event.payload };
-
     let store = this.store;
 
     async function handle (e, i = 0) {
       const hasNext =  i + 1 < handler.length;
       const handleNext = handle.bind(this, e, i + 1);
+      let output = handler[i](store, ctx) || {};
 
-      let output = handler[i](store, ctx);
       output = output.then ? await output : output;
-
       store = { ...store, ...output };
 
       hasNext && requestAnimationFrame(handleNext);
@@ -37,21 +35,19 @@ export default class Dispatcher {
   // allow array or functions via concatination.
   getHandler ({ type = 'react', key }) {
     const handler = plugins[type].handlers[key];
-
     return Array.prototype.concat(handler);
   };
 
   // call plugin.register on each plugin if
   // hasRegisteredPlugins is false
   registerPlugins () {
-    if (this.hasRegisteredPlugins) return false;
+    if (this.hasRegisteredPlugins) {
+     return false;
+    };
 
     for (let name in plugins) {
       const { register } = plugins[name];
-
-      if (typeof register === 'function') {
-        register(this.dispatch);
-      };
+      register && register(this.dispatch);
     };
 
     return true;
