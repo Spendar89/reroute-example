@@ -1,9 +1,5 @@
 import 'babel-polyfill';
 
-function wrap (asyncMiddleware) {
-  return { asyncMiddleware };
-};
-
 export default {
   clickedTestButton: [
     (store, ctx) => {
@@ -12,17 +8,15 @@ export default {
       return store;
     },
 
-    //wrap (
-      async (store, ctx) => {
-        const { ms } = ctx.payload;
+    async (store, ctx) => {
+      const { ms } = ctx.payload;
 
-        await new Promise(r => setTimeout(r, ms));
+      await new Promise(r => setTimeout(r, ms));
 
-        ctx.finished = true;
+      ctx.finished = true;
 
-        return { ...store, ...{ yo: 'sup' } };
-      },
-    //),
+      return { ...store, ...{ yo: 'sup' } };
+    },
 
     (store, ctx) => {
       console.log(ctx.finished);
