@@ -22,24 +22,10 @@ export default class Dispatcher {
       const hasNext =  i + 1 < handler.length;
       const handleNext = handle.bind(this, e, i + 1);
 
-      // return output of each of handler's
-      // middleware functions
-      const getOutput = async () => {
-        const output = handler[i](store, ctx);
+      let output = handler[i](store, ctx);
+      output = output.then ? await output : output;
 
-        // if output is a promise,
-        // resolve it via async/await
-        return output.then
-          ? await output
-          : output;
-      };
-
-      // update the local store value being passed to handler's
-      // middleware by merging it with each middleware's output
-      store = {
-        ...store,
-        ...(await getOutput())
-      };
+      store = { ...store, ...output };
 
       hasNext && requestAnimationFrame(handleNext);
     };
