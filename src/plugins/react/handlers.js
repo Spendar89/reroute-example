@@ -11,11 +11,12 @@ export default {
 
       await new Promise(r => setTimeout(r, ms));
 
-      return { ...store, ...{ changed: true } };
+      return { ...store, ...{ changed: true, test: 'hey' } };
     },
 
     (store, ctx) => {
       console.log(ctx, store);
+      return store;
     }
   ],
 
