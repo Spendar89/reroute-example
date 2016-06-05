@@ -100,7 +100,7 @@ class Dispatcher {
         );
       };
 
-      componentDidMount () {
+      componentWillMount () {
         eventEmitter.on(
           'change',
           this.setStateFromStore.bind(this)
