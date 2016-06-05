@@ -9,10 +9,6 @@ import { EventEmitter2 } from 'eventemitter2';
 
 const eventEmitter = new EventEmitter2({});
 
-window.$$ = $$;
-
-// TODO: make conditional handler custom dispatch functions
-
 class Dispatcher {
   constructor (opts) {
     this.opts = opts;
@@ -76,7 +72,7 @@ class Dispatcher {
   wrapComponent(WrappedComponent, mapping) {
     const self = this;
 
-    return class Connect  extends React.Component {
+    return class Wrapper extends React.Component {
       // TOOD: replace mapping arg with component props
       constructor (props) {
         super(props);
@@ -129,4 +125,3 @@ class Dispatcher {
 };
 
 export default new Dispatcher({});
-
