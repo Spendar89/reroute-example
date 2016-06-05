@@ -5,12 +5,11 @@ import moment from 'moment';
 import { ERRORS } from './constants';
 import * as plugins from './plugins';
 import store from './store';
-import { EventEmitter2 } from 'eventemitter2';
+import { EventEmitter2 as EventEmitter } from 'eventemitter2';
 
-const eventEmitter = new EventEmitter2({});
-
-class Dispatcher {
+class Dispatcher extends EventEmitter {
   constructor (opts) {
+    super(opts);
     this.opts = opts;
     this.store = $$.Map(store);
     this.isRegistered = this.registerPlugins();
@@ -33,11 +32,11 @@ class Dispatcher {
       };
 
       if (i + 1 < handler.length) {
-         requestAnimationFrame(handle.bind(this, e, i+1));
+        requestAnimationFrame(handle.bind(this, e, i+1));
       } else {
         this.store = this.store.merge(store);
 
-        eventEmitter.emit('change', this.store);
+        this.emit('commit', this.store);
       };
     };
 
@@ -62,65 +61,10 @@ class Dispatcher {
     for (let name in plugins) {
       const { register } = plugins[name];
 
-      register && register(this.dispatch);
+      register && register(this);
     };
 
     return true;
-  };
-
-  // TODO: move to separate file, perhaps in react plugin dir?
-  wrapComponent(WrappedComponent, mapping) {
-    const self = this;
-
-    return class Wrapper extends React.Component {
-      // TOOD: replace mapping arg with component props
-      constructor (props) {
-        super(props);
-
-        this.state = {
-          store: $$.Map({})
-        };
-      };
-
-      setStateFromStore(store) {
-        const newStore = {};
-
-        for (let key in mapping) {
-          newStore[key] = store.getIn(
-            mapping[key]
-          );
-        };
-
-        store = this.state
-          .store
-          .merge(newStore);
-
-        this.setState(
-          { store }
-        );
-      };
-
-      componentWillMount () {
-        eventEmitter.on(
-          'change',
-          this.setStateFromStore.bind(this)
-        );
-
-        this.setStateFromStore(self.store);
-      };
-
-      shouldComponentUpdate (_, nextState) {
-        return this.state.store !== nextState.store;
-      };
-
-      render () {
-        const props = this.state
-          .store
-          .toJS();
-
-        return <WrappedComponent { ...props } />;
-      };
-    };
   };
 };
 

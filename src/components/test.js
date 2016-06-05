@@ -1,7 +1,14 @@
 import React from 'react';
-import dispatcher from './../Dispatcher';
+import dispatcher from './../dispatcher';
 
 class Test extends React.Component {
+  componentDidMount () {
+    this.props.dispatch({
+      key: 'clickedTestButton',
+      payload: { ms: 1000 }
+    });
+  };
+
   render() {
     return (
       <h4>
@@ -11,4 +18,7 @@ class Test extends React.Component {
   };
 };
 
-export default dispatcher.wrapComponent(Test, { test: ['test'] });
+export default dispatcher.wrapComponent(
+  Test,
+  { test: ['test'] }
+);

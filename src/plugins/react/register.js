@@ -1,12 +1,5 @@
-//import handlers from './handlers';
+import wrapComponent from './wrapComponent';
 
-//export default function register (dispatch) {
-    //for (let key in handlers) {
-      //socket.on(key, payload => {
-        //dispatch({
-          //key,
-          //payload
-        //});
-      //});
-    //}
-//};
+export default function register (dispatcher) {
+  dispatcher.wrapComponent = wrapComponent.bind(this, dispatcher);
+};

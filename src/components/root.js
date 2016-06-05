@@ -1,4 +1,4 @@
-import Test from './test';
+import Test from './Test';
 import React from 'react';
 
 export default class Root extends React.Component {
