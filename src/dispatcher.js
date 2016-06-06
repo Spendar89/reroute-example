@@ -1,6 +1,6 @@
 import 'babel-polyfill';
 import React from 'react';
-import $$ from 'immutable';
+import { Map, fromJS } from 'immutable';
 import moment from 'moment';
 import { ERRORS } from './constants';
 import * as plugins from './plugins';
@@ -11,7 +11,7 @@ class Dispatcher extends EventEmitter {
   constructor (opts) {
     super(opts);
     this.opts = opts;
-    this.store = $$.Map().merge(store);
+    this.store = fromJS(store);
     this.isRegistered = this.registerPlugins();
   };
 
@@ -19,22 +19,19 @@ class Dispatcher extends EventEmitter {
     const handler = this.getHandler(event);
     const ctx = { ...event };
 
-    let store = this.store.toJS();
+    let store = this.store;
 
     async function handle (e, i=0) {
-      let output = handler[i](store, ctx) || {};
+      let output = handler[i](store.toJS(), ctx) || {};
 
       output = output.then ? await output : output;
 
-      store = {
-        ...store,
-        ...output
-      };
+      store = store.mergeDeep(output);
 
       if (i + 1 < handler.length) {
         requestAnimationFrame(handle.bind(this, e, i+1));
       } else {
-        this.store = this.store.merge(store);
+        this.store = store;
 
         this.emit('commit', this.store);
       };

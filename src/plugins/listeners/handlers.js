@@ -3,25 +3,33 @@ export default {
     console.log(key + ' listener', payload);
 
     return {
+      test: 'sdg',
       user: {
         name: {
           first: 'lala',
-          last: 'anthony'
+          last: ['cool']
         }
       }
     };
   },
 
-  'user.name.first': (store, { key, payload }) => {
+  'user.name': (store, { key, payload }) => {
     console.log(key + ' listener', payload);
 
     return {
+      test: 'sdg',
       user: {
         name: {
-          first: 'carmelo',
-          last: 'anthony'
+          first: 'lala',
+          last: ['cool', 'dude']
         }
       }
     };
+  },
+
+  'user.name.last.1': (store, { key, payload }) => {
+    console.log(key + ' listener', payload);
+
+    return store;
   }
 };
