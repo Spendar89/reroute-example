@@ -1,8 +1,8 @@
 import handlers from './handlers';
 
-export default function register ({ dispatch }, source) {
+export default function register (dispatcher) {
   for (let key in handlers) {
-    // multiple source paths are separated by commas,
+    // multiple paths are separated by commas,
     // for registering single handler on multiple cursors
     const pathStrings = key.split(',');
 
@@ -11,16 +11,21 @@ export default function register ({ dispatch }, source) {
       // nested cursors are separated by periods,
       // so call split to ocnvert string to array
       const path = pathString.split('.');
-      const _source = source.select(path);
 
-      // if source exists at path, initiate a handler
-      // that will dispatch an event for the current
-      // handler-key and source-data
-      _source && _source.on('update', ({ data: payload }) => {
-        dispatch({
-          key,
-          payload
-        });
+      let previousValue = dispatcher.store.getIn(path);
+
+      dispatcher.on('commit', () => {
+        const currentValue = dispatcher.store.getIn(path);
+
+        if (previousValue !== currentValue) {
+          dispatcher.dispatch({
+            key,
+            type: 'listeners',
+            payload: { previousValue, currentValue }
+          });
+
+          previousValue = currentValue;
+        };
       });
     };
   };

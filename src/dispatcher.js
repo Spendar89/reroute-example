@@ -11,13 +11,13 @@ class Dispatcher extends EventEmitter {
   constructor (opts) {
     super(opts);
     this.opts = opts;
-    this.store = $$.Map(store);
+    this.store = $$.Map().merge(store);
     this.isRegistered = this.registerPlugins();
   };
 
   dispatch (event) {
     const handler = this.getHandler(event);
-    const ctx = { payload: event.payload };
+    const ctx = { ...event };
 
     let store = this.store.toJS();
 
