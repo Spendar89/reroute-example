@@ -6,22 +6,20 @@ export default function register (dispatcher) {
     : val;
 
   for (let key in handlers) {
-    // multiple paths are separated by commas,
-    // for registering single handler on multiple cursors
+    // multiple paths are separated by commas
     const pathStrings = key.split(',');
 
     // register handler for each path
     for (let pathString of pathStrings) {
-      // nested paths are separated by periods,
+      // nested paths are separated by periods
       const path = pathString.split('.');
 
-      let previousValue = dispatcher.store.getIn(path);
+      dispatcher.on('commit', (prevStore) => {
+        const previousValue = prevStore.getIn(path);
+        const currentValue = dispatcher.store.getIn(path);
 
-      dispatcher.on('commit', (store) => {
-        const currentValue = store.getIn(path);
-
-        // reference equality check works bc
-        // values are immutable
+        // reference equality check works
+        // because values are immutable
         if (previousValue !== currentValue) {
           dispatcher.dispatch({
             key,
@@ -31,9 +29,6 @@ export default function register (dispatcher) {
               currentValue: valToJS(currentValue)
             }
           });
-
-          // prevent infinite loop
-          previousValue = currentValue;
         };
       });
     };

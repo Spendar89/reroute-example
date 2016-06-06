@@ -18,13 +18,20 @@ class Dispatcher extends EventEmitter {
   dispatch (event) {
     const handler = this.getHandler(event);
     const ctx = { ...event };
+    const prevStore = this.store;
 
     let store = this.store;
 
     async function handle (e, i=0) {
-      let output = handler[i](store.toJS(), ctx) || {};
+      let output = handler[i](
+        store.toJS(),
+        ctx
+      );
 
-      output = output.then ? await output : output;
+      // resolve ouput if it returns a promise
+      output = output && output.then
+        ? await output
+        : output;
 
       store = store.mergeDeep(output);
 
@@ -33,7 +40,7 @@ class Dispatcher extends EventEmitter {
       } else {
         this.store = store;
 
-        this.emit('commit', this.store);
+        this.emit('commit', prevStore);
       };
     };
 
@@ -45,7 +52,9 @@ class Dispatcher extends EventEmitter {
   getHandler ({ type = 'react', key }) {
     const handler = plugins[type].handlers[key];
 
-    return Array.prototype.concat(handler);
+    return Array
+      .prototype
+      .concat(handler);
   };
 
   // call plugin.register on each plugin if

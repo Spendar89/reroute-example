@@ -1,53 +1,55 @@
 import React from 'react';
-import { Map } from 'immutable';
+import { Map, fromJS } from 'immutable';
 
 export default function wrapComponent (dispatcher, WrappedComponent, mapping) {
   return class Wrapper extends React.Component {
     constructor (props) {
       super(props);
-
-      this.state = {
-        store: Map({})
-      };
     };
 
-    setStateFromStore(store) {
-      const newStore = {};
+    setStateFromStore() {
+      const newState = {};
 
       for (let key in mapping) {
-        newStore[key] = store.getIn(
-          mapping[key]
-        );
+        newState[key] = dispatcher
+          .store
+          .getIn(mapping[key]);
       };
 
-      store = this.state
-        .store
-        .merge(newStore);
-
-      this.setState(
-        { store }
-      );
+      this.setState(newState);
     };
 
     componentWillMount () {
       dispatcher.on(
         'commit',
-        this.setStateFromStore.bind(this)
+        this.setStateFromStore
+          .bind(this)
       );
 
-      this.setStateFromStore(dispatcher.store);
+      this.setStateFromStore();
     };
 
     shouldComponentUpdate (_, nextState) {
-      return this.state.store !== nextState.store;
+      const state = fromJS(this.state);
+
+      return state !== state.mergeDeep(nextState);
     };
 
     render () {
-      const dispatch = dispatcher.dispatch.bind(dispatcher);
-      const store = this.state.store.toJS();
-      const props = { ...store, dispatch };
+      const dispatch = dispatcher
+        .dispatch
+        .bind(dispatcher);
 
-      return React.createElement(WrappedComponent, props);
+      const props = {
+        ...this.state,
+        ...this.props,
+        dispatch
+      };
+
+      return React.createElement(
+        WrappedComponent,
+        props
+      );
     };
   };
 };
