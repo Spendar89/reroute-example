@@ -58,12 +58,16 @@ describe('dispatcher', () => {
     dispatcher.dispatch(testEvent1);
     dispatcher.dispatch(testEvent2);
 
-    it('should handle events by calling the correct handler', () => {
-      const { test } = dispatcher.plugins;
-      const { testEvent1, testEvent2 } = test.handlers;
+    const { handlers } = dispatcher.plugins.test;
 
-      expect(testEvent1[0].calls.length).toEqual(1);
-      expect(testEvent2.calls.length).toEqual(1);
-    })
-  })
+    it('should handle events by calling each middleware of the correct handler', () => {
+      for (let i in handlers.testEvent1) {
+        expect(handlers.testEvent1[i].calls.length).toEqual(1);
+      };
+    });
+
+    it('should handle events by calling the correct handler directly', () => {
+      expect(handlers.testEvent2.calls.length).toEqual(1);
+    });
+  });
 });
