@@ -1,8 +1,5 @@
 import 'babel-polyfill';
-import React from 'react';
 import { Map, fromJS } from 'immutable';
-import moment from 'moment';
-import { ERRORS } from './constants';
 import * as plugins from './plugins';
 import store from './store';
 import { EventEmitter2 as EventEmitter } from 'eventemitter2';
