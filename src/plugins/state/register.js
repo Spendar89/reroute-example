@@ -1,11 +1,11 @@
-import handlers from './handlers';
+import routes from './routes';
 
-export default function register (dispatcher) {
+export default function register (router) {
   const valToJS = val => val && val.toJS
     ? val.toJS()
     : val;
 
-  for (let key in handlers) {
+  for (let key in routes) {
     // multiple paths are separated by commas
     const pathStrings = key.split(',');
 
@@ -14,16 +14,16 @@ export default function register (dispatcher) {
       // nested paths are separated by periods
       const path = pathString.split('.');
 
-      dispatcher.on('commit', (prevStore) => {
+      router.on('commit', (prevStore) => {
         const previousValue = prevStore.getIn(path);
-        const currentValue = dispatcher.store.getIn(path);
+        const currentValue = router.store.getIn(path);
 
         // reference equality check works
         // because values are immutable
         if (previousValue !== currentValue) {
-          dispatcher.dispatch({
+          router.route({
             key,
-            type: 'listeners',
+            type: 'state',
             payload: {
               previousValue: valToJS(previousValue),
               currentValue: valToJS(currentValue)

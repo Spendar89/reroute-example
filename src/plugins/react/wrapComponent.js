@@ -1,7 +1,7 @@
 import React from 'react';
 import { Map, fromJS } from 'immutable';
 
-export default function wrapComponent (dispatcher, WrappedComponent, mapping) {
+export default function wrapComponent (router, WrappedComponent, mapping) {
   return class Wrapper extends React.Component {
     constructor (props) {
       super(props);
@@ -11,7 +11,7 @@ export default function wrapComponent (dispatcher, WrappedComponent, mapping) {
       const newState = {};
 
       for (let key in mapping) {
-        newState[key] = dispatcher
+        newState[key] = router
           .store
           .getIn(mapping[key]);
       };
@@ -20,7 +20,7 @@ export default function wrapComponent (dispatcher, WrappedComponent, mapping) {
     };
 
     componentWillMount () {
-      dispatcher.on(
+      router.on(
         'commit',
         this.setStateFromStore
           .bind(this)
@@ -36,14 +36,14 @@ export default function wrapComponent (dispatcher, WrappedComponent, mapping) {
     };
 
     render () {
-      const dispatch = dispatcher
-        .dispatch
-        .bind(dispatcher);
+      const route = router
+        .route
+        .bind(router);
 
       const props = {
         ...this.state,
         ...this.props,
-        dispatch
+        route
       };
 
       return React.createElement(

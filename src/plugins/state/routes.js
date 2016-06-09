@@ -1,6 +1,6 @@
 export default {
   'test': (store, { key, payload }) => {
-    console.log(key + ' listener', payload);
+    console.log(key + ' state', payload);
 
     return {
       test: 'sdg',
@@ -14,7 +14,7 @@ export default {
   },
 
   'user.name': (store, { key, payload }) => {
-    console.log(key + ' listener', payload);
+    console.log(key + ' state', payload);
 
     return {
       test: 'sdg',
@@ -28,7 +28,7 @@ export default {
   },
 
   'user.name.last.1': (store, { key, payload }) => {
-    console.log(key + ' listener', payload);
+    console.log(key + ' state', payload);
 
     return store;
   }

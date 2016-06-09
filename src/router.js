@@ -4,7 +4,7 @@ import * as plugins from './plugins';
 import store from './store';
 import { EventEmitter2 as EventEmitter } from 'eventemitter2';
 
-class Dispatcher extends EventEmitter {
+class Router extends EventEmitter {
   constructor () {
     super();
     this.store = fromJS(store);
@@ -12,7 +12,7 @@ class Dispatcher extends EventEmitter {
     this.isRegistered = this.registerPlugins();
   };
 
-  dispatch (event) {
+  route (event) {
     const handler = this.getHandler(event);
     const ctx = { ...event };
     const prevStore = this.store;
@@ -47,7 +47,7 @@ class Dispatcher extends EventEmitter {
   // return handler based on type and key and
   // allow array or functions via concatination.
   getHandler ({ type = 'react', key }) {
-    const handler = this.plugins[type].handlers[key];
+    const handler = this.plugins[type].routes[key];
 
     return Array
       .prototype
@@ -71,4 +71,4 @@ class Dispatcher extends EventEmitter {
   };
 };
 
-export default new Dispatcher({});
+export default new Router({});

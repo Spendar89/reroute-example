@@ -1,2 +1,2 @@
 export { default as register } from './register';
-export { default as handlers } from './handlers';
+export { default as routes } from './routes';

@@ -1,9 +1,9 @@
 import React from 'react';
-import dispatcher from './../dispatcher';
+import router from './../router';
 
 class Test extends React.Component {
   componentDidMount () {
-    this.props.dispatch({
+    this.props.route({
       key: 'clickedTestButton',
       payload: { ms: 1000 }
     });
@@ -18,7 +18,7 @@ class Test extends React.Component {
   };
 };
 
-export default dispatcher.wrapComponent(
+export default router.wrapComponent(
   Test,
   { test: ['test'] }
 );

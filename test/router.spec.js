@@ -1,32 +1,32 @@
 import expect from 'expect';
-import dispatcher from './../src/dispatcher';
+import router from './../src/router';
 import store from './../src/store';
 import { fromJS } from 'immutable';
 
-describe('dispatcher', () => {
+describe('router', () => {
   it ('has an immutable store', () => {
-    expect(dispatcher.store).toExist();
-    expect(dispatcher.store).toEqual(fromJS(store));
+    expect(router.store).toExist();
+    expect(router.store).toEqual(fromJS(store));
   });
 
   it ('it registers the current plugins by default', () => {
-    expect(dispatcher.isRegistered).toEqual(true);
+    expect(router.isRegistered).toEqual(true);
   });
 
   it ('only registers the current plugins when isRegistered is false', () => {
-    expect(dispatcher.registerPlugins()).toEqual(false);
+    expect(router.registerPlugins()).toEqual(false);
 
-    dispatcher.isRegistered = false;
+    router.isRegistered = false;
 
-    expect(dispatcher.registerPlugins()).toEqual(true);
+    expect(router.registerPlugins()).toEqual(true);
 
-    dispatcher.isRegistered = dispatcher.registerPlugins();
+    router.isRegistered = router.registerPlugins();
 
-    expect(dispatcher.isRegistered).toEqual(true);
-    expect(dispatcher.registerPlugins()).toEqual(false);
+    expect(router.isRegistered).toEqual(true);
+    expect(router.registerPlugins()).toEqual(false);
   });
 
-  describe('dispatch', () => {
+  describe('route', () => {
     global.requestAnimationFrame = setTimeout;
 
     const testEvent1 = {
@@ -43,31 +43,31 @@ describe('dispatcher', () => {
 
     const _plugins = {
       test: {
-        handlers: {
+        routes: {
           testEvent1: [ expect.createSpy() ],
           testEvent2: expect.createSpy()
         }
       }
     };
 
-    dispatcher.plugins = {
-      ...dispatcher.plugins,
+    router.plugins = {
+      ...router.plugins,
       ..._plugins
     };
 
-    dispatcher.dispatch(testEvent1);
-    dispatcher.dispatch(testEvent2);
+    router.route(testEvent1);
+    router.route(testEvent2);
 
-    const { handlers } = dispatcher.plugins.test;
+    const { routes } = router.plugins.test;
 
     it('should handle events by calling each middleware of the correct handler', () => {
-      for (let i in handlers.testEvent1) {
-        expect(handlers.testEvent1[i].calls.length).toEqual(1);
+      for (let i in routes.testEvent1) {
+        expect(routes.testEvent1[i].calls.length).toEqual(1);
       };
     });
 
     it('should handle events by calling the correct handler directly', () => {
-      expect(handlers.testEvent2.calls.length).toEqual(1);
+      expect(routes.testEvent2.calls.length).toEqual(1);
     });
   });
 });
