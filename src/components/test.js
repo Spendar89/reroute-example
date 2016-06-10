@@ -12,13 +12,16 @@ class Test extends React.Component {
   render() {
     return (
       <h4>
-        Test props: { JSON.stringify(this.props) }
+        {Object.keys(this.props).map((k) =>
+          <p key={k}> {k}: {this.props[k]} </p>
+        )}
       </h4>
     );
   };
 };
 
-export default router.connect(
-  Test,
-  { test: ['test'] }
-);
+export default router.connect(Test, {
+  first: ['user', 'name', 'first'],
+  last: ['user', 'name', 'last'],
+  name: ['user', 'name']
+});

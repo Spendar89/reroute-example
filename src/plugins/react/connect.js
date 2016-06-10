@@ -28,10 +28,25 @@ export default function connect (router, Component, mapping) {
       this.setState(mapState);
     };
 
+    // TODO: determine if this implementation
+    // is more efficient than converting to
+    // immutable and merging before check
     shouldComponentUpdate (_, nextState) {
-      const state = fromJS(this.state);
+      // TODO: move to util...
+      const length = obj =>
+        Object.keys(obj).length;
 
-      return state !== state.merge(nextState);
+      // values are immutable, so reference
+      // equality check works
+      for (let k in nextState) {
+        if (nextState[k] !== this.state[k]) {
+          return true;
+        };
+      };
+
+      // account for edge case where keys are removed
+      // from state
+      return length(nextState) !== length(this.state);
     };
 
     get wrappedProps () {
