@@ -18,7 +18,7 @@ class Test extends React.Component {
   };
 };
 
-export default router.wrapComponent(
+export default router.connect(
   Test,
   { test: ['test'] }
 );
