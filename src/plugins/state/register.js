@@ -16,7 +16,7 @@ export default function register (router) {
 
       router.on('commit', (prevStore) => {
         const previousValue = prevStore.getIn(path);
-        const currentValue = router.store.getIn(path);
+        const currentValue = router.state.getIn(path);
 
         // reference equality check works
         // because values are immutable

@@ -1,11 +1,12 @@
-import router from './router'
+import router from './router';
+import store from './store';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
 import Root from './components/Root';
 import * as plugins from './plugins';
 
-//global._dispatcher = router;
+router.store= store;
 
 const App = Root =>
   <AppContainer><Root/></AppContainer>;

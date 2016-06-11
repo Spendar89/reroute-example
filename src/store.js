@@ -1,4 +1,8 @@
 export default {
-  test: false,
-  user: { name: 'jakey' }
+  msgs: [
+    {
+      subject: 'We should work together',
+      body: 'Hey Jake, just noticed...'
+    }
+  ]
 };

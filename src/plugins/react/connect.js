@@ -5,7 +5,7 @@ export default function connect (router, Component, mapping) {
   const route = e => router.route(e);
 
   const getVal = key => router
-    .store
+    .state
     .getIn(mapping[key]);
 
   const mapVal = key => ({
@@ -49,7 +49,7 @@ export default function connect (router, Component, mapping) {
       return length(nextState) !== length(this.state);
     };
 
-    get wrappedProps () {
+    get mergedProps () {
       return {
         ...this.state,
         ...this.props,
@@ -60,7 +60,7 @@ export default function connect (router, Component, mapping) {
     render () {
       return React.createElement(
         Component,
-        this.wrappedProps
+        this.mergedProps
       );
     };
   };

@@ -2,27 +2,27 @@ import 'babel-polyfill';
 
 export default {
   clickedTestButton: [
-    (store, ctx) => {
+    (state, ctx) => {
       ctx.changed = true;
     },
 
-    async (store, ctx) => {
+    async (state, ctx) => {
       const { ms } = ctx.payload;
 
       await new Promise(r => setTimeout(r, ms));
 
-      return { ...store, ...{ changed: true, test: 'hey' } };
+      return { ...state, ...{ changed: true, test: 'hey' } };
     },
 
-    (store, ctx) => {
-      console.log(ctx, store);
-      return store;
+    (state, ctx) => {
+      console.log(ctx, state);
+      return state;
     }
   ],
 
   submittedTestForm: [
-    (store) => {
-      return store;
+    (state) => {
+      return state;
     }
   ]
 };

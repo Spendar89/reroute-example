@@ -1,27 +1,31 @@
 import 'babel-polyfill';
 import { Map, fromJS } from 'immutable';
 import * as plugins from './plugins';
-import store from './store';
 import { EventEmitter2 as EventEmitter } from 'eventemitter2';
 
 class Router extends EventEmitter {
   constructor () {
     super();
-    this.store = fromJS(store);
+
+    this.state = new Map();
     this.plugins = plugins;
     this.isRegistered = this.registerPlugins();
+  };
+
+  set store (store) {
+    this.state = fromJS(store);
   };
 
   route (event) {
     const handler = this.getHandler(event);
     const ctx = { ...event };
-    const prevStore = this.store;
+    const prevState = this.state;
 
-    let store = this.store;
+    let state = this.state;
 
     async function handle (e, i=0) {
       let output = handler[i](
-        store.toJS(),
+        state.toJS(),
         ctx
       );
 
@@ -30,14 +34,14 @@ class Router extends EventEmitter {
         ? await output
         : output;
 
-      store = store.mergeDeep(output);
+      state = state.mergeDeep(output);
 
       if (i + 1 < handler.length) {
         requestAnimationFrame(handle.bind(this, e, i+1));
       } else {
-        this.store = store;
+        this.state = state;
 
-        this.emit('commit', prevStore);
+        this.emit('commit', prevState);
       };
     };
 

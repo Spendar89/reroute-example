@@ -1,5 +1,5 @@
 export default {
-  'test': (store, { key, payload }) => {
+  'test': (state, { key, payload }) => {
     console.log(key + ' state', payload);
 
     return {
@@ -13,7 +13,7 @@ export default {
     };
   },
 
-  'user.name': (store, { key, payload }) => {
+  'user.name': (state, { key, payload }) => {
     console.log(key + ' state', payload);
 
     return {
@@ -27,9 +27,9 @@ export default {
     };
   },
 
-  'user.name.last.1': (store, { key, payload }) => {
+  'user.name.last.1': (state, { key, payload }) => {
     console.log(key + ' state', payload);
 
-    return store;
+    return state;
   }
 };

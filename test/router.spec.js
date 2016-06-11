@@ -4,9 +4,9 @@ import store from './../src/store';
 import { fromJS } from 'immutable';
 
 describe('router', () => {
-  it ('has an immutable store', () => {
-    expect(router.store).toExist();
-    expect(router.store).toEqual(fromJS(store));
+  it ('has an immutable state', () => {
+    expect(router.state).toExist();
+    expect(router.state).toEqual(fromJS(store));
   });
 
   it ('it registers the current plugins by default', () => {
