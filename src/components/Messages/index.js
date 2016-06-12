@@ -2,34 +2,37 @@ import React from 'react';
 import Message from './Message';
 import connectComponent from 'reroute/react-reroute/connectComponent';
 
-class Messages extends React.Component {
-  render () {
-    const messages = this.props.messages.toJS()
+const Messages = (props) => {
+  const mergeProps = p => ({
+    ...p,
+    onClick: props.onClick
+  });
 
-    return (
-      <div>
-        <h2>{messages.length} Unread Messages:</h2>
-        {messages.map((msg, i) =>
-          <p key={i}>
-            <Message
-              onClick={this.props.handleClick}
-              {...msg}
-            />
-          </p>
-        )}
-      </div>
+  const messages = props.messages
+    .toJS()
+    .map((m, i) =>
+      <p key={i}>
+        <Message
+          {...mergeProps(m)}
+        />
+      </p>
     );
-  };
+
+  return (
+    <div>
+      <h2>{messages.length} Unread Messages:</h2>
+      {messages}
+    </div>
+  );
 };
 
-const mapStateToProps = state => ({
-  messages: state.get('msgs')
+const mapStateToProps = (state, props) => ({
+  messages: state.get(props.path)
 });
 
 const mapRouteToProps = route => ({
-  handleClick(e) {
+  onClick (e) {
     e.preventDefault();
-
     route({
       key: 'clickedTestButton',
       payload: {}

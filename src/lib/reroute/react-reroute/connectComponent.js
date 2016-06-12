@@ -9,7 +9,7 @@ export default function connectComponent (mapStateToProps, mapRouteToProps) {
     return class Provider extends React.Component {
       handleCommit (state = router.state) {
         this.setState(
-          mapStateToProps(state)
+          mapStateToProps(state, this.props)
         );
       };
 
