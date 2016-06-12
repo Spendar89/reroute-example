@@ -1,15 +1,44 @@
 import 'babel-polyfill';
 import { Map, fromJS } from 'immutable';
-import * as plugins from './plugins';
 import { EventEmitter2 as EventEmitter } from 'eventemitter2';
+
+let __plugins = {};
+
+function getRouteHandler (event) {
+  const { type='react', key } = event;
+  const route = __plugins[type].routes[key];
+
+  return Array
+    .prototype
+    .concat(route);
+};
+
+function registerPlugins (router, plugins) {
+  for (let name in plugins) {
+    if (!__plugins[name]) {
+      let { register } = plugins[name];
+
+      register && register(router);
+    };
+  };
+
+  return {
+    ...plugins,
+    ...__plugins
+  };
+};
 
 class Router extends EventEmitter {
   constructor () {
     super();
+    this.store = {};
+  };
 
-    this.state = new Map();
-    this.plugins = plugins;
-    this.isRegistered = this.registerPlugins();
+  set plugins (plugins) {
+    __plugins = registerPlugins(
+      this,
+      plugins
+    );
   };
 
   set store (store) {
@@ -17,14 +46,14 @@ class Router extends EventEmitter {
   };
 
   route (event) {
-    const handler = this.getHandler(event);
+    const route = getRouteHandler(event);
     const ctx = { ...event };
     const prevState = this.state;
 
     let state = this.state;
 
     async function handle (e, i=0) {
-      let output = handler[i](
+      let output = route[i](
         state.toJS(),
         ctx
       );
@@ -36,7 +65,7 @@ class Router extends EventEmitter {
 
       state = state.mergeDeep(output);
 
-      if (i + 1 < handler.length) {
+      if (i + 1 < route.length) {
         requestAnimationFrame(handle.bind(this, e, i+1));
       } else {
         this.state = state;
@@ -46,32 +75,6 @@ class Router extends EventEmitter {
     };
 
     requestAnimationFrame(handle.bind(this));
-  };
-
-  // return handler based on type and key and
-  // allow array or functions via concatination.
-  getHandler ({ type = 'react', key }) {
-    const handler = this.plugins[type].routes[key];
-
-    return Array
-      .prototype
-      .concat(handler);
-  };
-
-  // call plugin.register on each plugin if
-  // isRegistered is false
-  registerPlugins () {
-    if (this.isRegistered) {
-      return false;
-    };
-
-    for (let name in this.plugins) {
-      const { register } = this.plugins[name];
-
-      register && register(this);
-    };
-
-    return true;
   };
 };
 

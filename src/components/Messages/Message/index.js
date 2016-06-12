@@ -1,6 +1,8 @@
 import React from 'react';
 
-const Message = ({ subject, body }) =>
-  <li><b>{subject}:&ensp;</b>{body}</li>;
+const Message = (props) =>
+  <a href {...props}>
+    <b>{props.subject}:&ensp;</b>{props.body}
+  </a>
 
 export default Message;

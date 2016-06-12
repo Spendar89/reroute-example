@@ -1,12 +1,14 @@
 import React from 'react';
-import router from './../../router';
 import Message from './Message';
+import connectComponent from 'reroute/react-reroute/connectComponent';
 
 class Messages extends React.Component {
-  componentDidMount () {
+  handleClick (e) {
+    e.preventDefault();
+
     this.props.route({
       key: 'clickedTestButton',
-      payload: { ms: 1000 }
+      payload: {}
     });
   };
 
@@ -15,17 +17,20 @@ class Messages extends React.Component {
 
     return (
       <div>
-        <h2>Current Messages</h2>
-        <ul>
-          {messages.map((message, key) =>
-            <Message {...message} key={key} />
-          )}
-        </ul>
+        <h2>{messages.length} Unread Messages:</h2>
+        {messages.map((msg, i) =>
+          <p key={i}>
+            <Message
+              onClick={this.handleClick.bind(this)}
+              {...msg}
+            />
+          </p>
+        )}
       </div>
     );
   };
 };
 
-export default router.connect(Messages, {
-  messages: ['msgs'],
+export default connectComponent(Messages, {
+  messages: ['msgs']
 });

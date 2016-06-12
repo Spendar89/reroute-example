@@ -4,6 +4,15 @@ export default {
   clickedTestButton: [
     (state, ctx) => {
       ctx.changed = true;
+      return {
+        msgs: [
+          ...state.msgs,
+          {
+            subject: 'duuude',
+            body: 'suupppp?'
+          }
+        ]
+      };
     },
 
     async (state, ctx) => {
@@ -11,19 +20,18 @@ export default {
 
       await new Promise(r => setTimeout(r, ms));
 
-      return { ...state, ...{ changed: true, test: 'hey' } };
+      return { changed: true, test: 'hey' };
     },
 
     (state, ctx) => {
       console.log(ctx, state);
-      return state;
+
+      return ctx.payload;
     }
   ],
 
   submittedTestForm: [
-    (state) => {
-      return state;
-    }
+    (state) => {}
   ]
 };
 

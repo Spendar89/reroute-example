@@ -32,10 +32,12 @@
     "babel-plugin-syntax-async-functions": "^6.8.0",
     "babel-plugin-transform-regenerator": "^6.8.0",
     "babel-polyfill": "^6.8.0",
+    "brfs": "^1.4.3",
     "eventemitter2": "^1.0.3",
     "immutable": "^3.8.1",
     "moment": "^2.13.0",
     "react": "^15.0.1",
-    "react-dom": "^15.0.1"
+    "react-dom": "^15.0.1",
+    "transform-loader": "^0.2.3"
   }
 }
