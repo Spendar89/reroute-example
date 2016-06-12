@@ -70,7 +70,7 @@ class Router extends EventEmitter {
       } else {
         this.state = state;
 
-        this.emit('commit', prevState);
+        this.emit('commit', this.state);
       };
     };
 

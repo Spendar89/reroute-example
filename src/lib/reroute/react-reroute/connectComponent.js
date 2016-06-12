@@ -1,35 +1,53 @@
 import React from 'react';
 import router from '../router';
 import { Map, fromJS } from 'immutable';
-import Provider from './Provider';
 
-export default function connectComponent (Component, mapping) {
-  const route = e => router.route(e),
-    handleCommit = cb => router.on('commit', cb),
-    getVal = key => router.state && router.state.getIn(mapping[key]),
-    mapVal = key => ({ [key]: getVal(key) });
+export default function connectComponent (mapStateToProps, mapRouteToProps) {
+  return function (WrappedComponent) {
+    const routeProps = mapRouteToProps(e => router.route(e));
 
-  const mapState = _ => Object
-    .keys(mapping)
-    .reduce((state, key) => {
-      return {
-        ...state,
-        ...mapVal(key)
+    return class Provider extends React.Component {
+      handleCommit (state = router.state) {
+        this.setState(
+          mapStateToProps(state)
+        );
       };
-    }, {});
 
-  const props = {
-    mapState,
-    handleCommit,
-    route,
-    Component
+      componentWillMount () {
+        router.on(
+          'commit',
+          this.handleCommit.bind(this)
+        );
+
+        this.handleCommit();
+      };
+
+      // TODO: determine if this implementation
+      // is more efficient than converting to
+      // immutable and merging before check
+      shouldComponentUpdate (_, nextState) {
+        const currentState = this.state || {};
+
+        // values are immutable, so reference
+        // equality check works
+        for (let k in nextState) {
+          if (nextState[k] !== currentState[k]) {
+            return true;
+          };
+        };
+
+        // account for edge case where keys are removed
+        // from state
+        return Object.keys(nextState).length !==
+          Object.keys(currentState).length;
+      };
+
+      render () {
+        return React.createElement(WrappedComponent, {
+          ...this.state,
+          ...routeProps
+        });
+      };
+    };
   };
-
-  return () => {
-    return React.createElement(
-      Provider,
-      props
-    );
-  };
-
 };

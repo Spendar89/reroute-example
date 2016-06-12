@@ -3,17 +3,8 @@ import Message from './Message';
 import connectComponent from 'reroute/react-reroute/connectComponent';
 
 class Messages extends React.Component {
-  handleClick (e) {
-    e.preventDefault();
-
-    this.props.route({
-      key: 'clickedTestButton',
-      payload: {}
-    });
-  };
-
   render () {
-    const messages = this.props.messages.toJS();
+    const messages = this.props.messages.toJS()
 
     return (
       <div>
@@ -21,7 +12,7 @@ class Messages extends React.Component {
         {messages.map((msg, i) =>
           <p key={i}>
             <Message
-              onClick={this.handleClick.bind(this)}
+              onClick={this.props.handleClick}
               {...msg}
             />
           </p>
@@ -31,6 +22,19 @@ class Messages extends React.Component {
   };
 };
 
-export default connectComponent(Messages, {
-  messages: ['msgs']
+const mapStateToProps = state => ({
+  messages: state.get('msgs')
 });
+
+const mapRouteToProps = route => ({
+  handleClick(e) {
+    e.preventDefault();
+
+    route({
+      key: 'clickedTestButton',
+      payload: {}
+    })
+  }
+});
+
+export default connectComponent(mapStateToProps, mapRouteToProps)(Messages)
