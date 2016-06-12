@@ -5,7 +5,7 @@ import connectComponent from 'reroute/react-reroute/connectComponent';
 const Messages = (props) => {
   const mergeProps = p => ({
     ...p,
-    onClick: props.onClick
+    onClick: props.handleClick
   });
 
   const messages = props.messages
@@ -20,6 +20,7 @@ const Messages = (props) => {
 
   return (
     <div>
+      <h2><i> Current Path: "{props.path}" </i></h2>
       <h2>{messages.length} Unread Messages:</h2>
       {messages}
     </div>
@@ -31,7 +32,7 @@ const mapStateToProps = (state, props) => ({
 });
 
 const mapRouteToProps = route => ({
-  onClick (e) {
+  handleClick (e) {
     e.preventDefault();
     route({
       key: 'clickedTestButton',

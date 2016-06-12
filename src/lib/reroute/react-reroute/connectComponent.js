@@ -44,6 +44,7 @@ export default function connectComponent (mapStateToProps, mapRouteToProps) {
 
       render () {
         return React.createElement(WrappedComponent, {
+          ...this.props,
           ...this.state,
           ...routeProps
         });
