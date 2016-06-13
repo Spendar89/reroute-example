@@ -1,6 +1,6 @@
 import React from 'react';
 import Message from './Message';
-import connectComponent from 'reroute/react-reroute/connectComponent';
+import connect from 'reroute-react';
 
 const Messages = (props) => {
   const mergeProps = p => ({
@@ -35,10 +35,11 @@ const mapRouteToProps = route => ({
   handleClick (e) {
     e.preventDefault();
     route({
+      type: 'react',
       key: 'clickedTestButton',
       payload: {}
     })
   }
 });
 
-export default connectComponent(mapStateToProps, mapRouteToProps)(Messages)
+export default connect(mapStateToProps, mapRouteToProps)(Messages)

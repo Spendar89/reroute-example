@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
 import Root from './components/Root';
-import router from 'reroute/router';
+import router from 'reroute-core';
 import store from './store';
 import * as plugins from 'plugins';
 
