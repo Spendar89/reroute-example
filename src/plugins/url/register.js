@@ -1,16 +1,55 @@
 import routes from './routes';
 
-export default function register ({ route }, source) {
-  for (let key in routes) {
-    source(key, ({ params: payload }) => {
-      // get current parsed query string object
-      //const qs = Util.getQueryString();
-      //const payload = { ...params, ...qs };
+export default function register (router) {
+  const onUrlChange = (e={}) => {
+    const state = e.state || {};
+    const payload = state.payload || {};
+    const { pathname, search } = window.location;
+    const paramsString = search.split('?')[1];
+    const params = paramsString && paramsString
+      .split('&')
+      .reduce((curr, p) => {
+        const [key, val] = p.split('=');
 
-      route({
-        key,
-        payload
-      });
-    });
+        curr[key] = val;
+
+        return curr;
+      }, {}) || {};
+
+    for (let key in routes) {
+      if (pathname === key) {
+        router.route({
+          key,
+          type: 'url',
+          payload: {
+            ...payload,
+            ...params
+          }
+        });
+      };
+    };
   };
+
+  const route = router.route.bind(router);
+
+  // TODO: add to actual route logic
+  router.route = (e) => {
+    router.emit('route', e);
+
+    return route(e);
+  };
+
+  // on new route, add to pushState to change url
+  router.on('route', ({ type, key, payload }) => {
+    // check pathname to prevent triggering twice
+    if (type === 'url' && window.location.pathname !== key) {
+      window.history.pushState({ payload }, '', key);
+    };
+  });
+
+  // TODO: remove (for convenience only)
+  window.__route = router.route;
+
+  // call on page load and when history changes
+  window.onload = window.onpopstate = onUrlChange;
 };
