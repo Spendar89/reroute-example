@@ -30,15 +30,6 @@ export default function register (router) {
     };
   };
 
-  const route = router.route.bind(router);
-
-  // TODO: add to actual route logic
-  router.route = (e) => {
-    router.emit('route', e);
-
-    return route(e);
-  };
-
   // on new route, add to pushState to change url
   router.on('route', ({ type, key, payload }) => {
     // check pathname to prevent triggering twice
@@ -48,7 +39,7 @@ export default function register (router) {
   });
 
   // TODO: remove (for convenience only)
-  window.__route = router.route;
+  window.__route = router.route.bind(router);
 
   // call on page load and when history changes
   window.onload = window.onpopstate = onUrlChange;

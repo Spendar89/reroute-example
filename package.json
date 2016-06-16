@@ -1,5 +1,5 @@
 {
-  "name": "reroute",
+  "name": "reroute-example",
   "version": "0.0.1",
   "description": "Jake Sendar's personal web app",
   "scripts": {
@@ -33,13 +33,14 @@
     "babel-plugin-transform-regenerator": "^6.8.0",
     "babel-polyfill": "^6.8.0",
     "brfs": "^1.4.3",
+    "eslint-plugin-react": "^5.2.0",
     "eventemitter2": "^1.0.3",
     "immutable": "^3.8.1",
     "moment": "^2.13.0",
     "react": "^15.0.1",
     "react-dom": "^15.0.1",
-    "reroute-core": "0.0.4",
-    "reroute-react": "0.0.5",
+    "reroute-core": "^0.1.1",
+    "reroute-react": "^0.1.0",
     "transform-loader": "^0.2.3"
   }
 }
