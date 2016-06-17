@@ -1,20 +1,26 @@
 import routes from './routes';
 
+const urlSearchToObj = (search) => {
+  const str = search.split('?')[1];
+  const obj = str && str
+    .split('&')
+    .reduce((curr, p) => {
+      const [key, val] = p.split('=');
+
+      curr[key] = val;
+
+      return curr;
+    });
+
+  return obj || {};
+};
+
 export default function register (router) {
-  const onUrlChange = (e={}) => {
-    const state = e.state || {};
-    const payload = state.payload || {};
-    const { pathname, search } = window.location;
-    const paramsString = search.split('?')[1];
-    const params = paramsString && paramsString
-      .split('&')
-      .reduce((curr, p) => {
-        const [key, val] = p.split('=');
-
-        curr[key] = val;
-
-        return curr;
-      }, {}) || {};
+  const onUrlChange = (e = {}) => {
+    const state = e.state || {},
+      payload = state.payload || {},
+      { pathname, search } = window.location,
+      params = urlSearchToObj(search);
 
     for (let key in routes) {
       if (pathname === key) {
