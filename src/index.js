@@ -2,14 +2,15 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
 import Root from './components/Root';
-import { Router, createProvider } from '../../reroute-core';
+import { createProvider } from '../../reroute-core';
 import store from './store';
 import * as plugins from 'plugins';
 
-const router = new Router({ store, plugins });
-
 const App = Root => {
-  const Provider = createProvider(router);
+  const Provider = createProvider({
+    store,
+    plugins
+  });
 
   return (
     <AppContainer>
