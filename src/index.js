@@ -10,11 +10,8 @@ import * as plugins from 'plugins';
 router.registerStore(store);
 router.registerPlugins(plugins)
 
-window._React = React;
-window._ReactDOM = ReactDOM;
-
 const App = Root =>
-  <AppContainer><Root router={router}/></AppContainer>;
+  <AppContainer><Root/></AppContainer>;
 
 ReactDOM.render(
   App(Root),

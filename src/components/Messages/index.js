@@ -35,7 +35,7 @@ const mapStateToProps = (state, props) => ({
   messages: state.get(props.path)
 });
 
-const mapRouteToProps = (route) => ({
+const mapRouteToProps = (route, props) => ({
   onRemoveAll (e) {
     e.preventDefault();
 
