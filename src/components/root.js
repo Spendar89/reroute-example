@@ -5,7 +5,7 @@ export default class Root extends React.Component {
   render() {
     return (
       <div>
-        <Messages path='msgs'/>
+        <Messages path='msgs' {...this.props}/>
       </div>
     );
   };

@@ -1,7 +1,8 @@
 import routes from './routes';
 
 export default function register (router) {
-  // converts url search string to js object
+  // util fn that converts url search
+  // string to js object
   const urlSearchToObj = (search) => {
     const str = search.split('?')[1];
     const obj = str && str
@@ -16,7 +17,6 @@ export default function register (router) {
 
     return obj || {};
   };
-
 
   const onUrlChange = (e = {}) => {
     const state = e.state || {},

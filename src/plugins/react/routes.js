@@ -1,5 +1,3 @@
-import 'babel-polyfill';
-
 export default {
   clickedTestButton: [
     (state, ctx) => {
@@ -30,8 +28,24 @@ export default {
     }
   ],
 
-  submittedTestForm: [
-    (state) => {}
+  removedTestButton: [
+    ({ msgs }, { payload }) => {
+      const { index } = payload;
+
+      const _msgs = msgs.reduce((curr, m, i) => {
+        if (i !== index) curr.push(m);
+        return curr;
+      }, []);
+
+      return { msgs: _msgs };
+    }
+  ],
+
+  clickedRemoveAllButton: [
+    (state, { payload }) => {
+      state.msgs.splice(1, state.msgs.length - 1);
+      return state;
+    }
   ]
 };
 
