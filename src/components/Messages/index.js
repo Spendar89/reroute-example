@@ -1,35 +1,6 @@
 import React from 'react';
 import Message from './Message';
-import { connect } from '../../../../reroute-core'
-//import connect from 'reroute-react';
-
-const Messages = (props) => {
-  const mergeProps = (p, index) => ({
-    ...p,
-    ...props
-  });
-
-  const messages = props.messages
-    .toJS()
-    .map((m, i) =>
-      <p key={i}>
-        <a href='#' onClick={props.onRemove.bind(this, i)}>X</a>
-        <Message
-          {...mergeProps(m, i)}
-        />
-      </p>
-    );
-
-  if (messages.length < 1) return null;
-  return (
-    <div>
-      <a href='#' onClick={props.onRemoveAll}>Delete All</a>
-      <h2><i> Current Path: "{props.path}" </i></h2>
-      <h2>{messages.length} Unread Messages:</h2>
-      {messages}
-    </div>
-  );
-};
+import { connect } from '../../../../reroute-core';
 
 const mapStateToProps = (state, props) => ({
   messages: state.get(props.path)
@@ -67,4 +38,36 @@ const mapRouteToProps = (route, props) => ({
   }
 });
 
-export default connect(mapStateToProps, mapRouteToProps)(Messages)
+export default connect(mapStateToProps, mapRouteToProps)(props => {
+  const mergeProps = (p, index) => ({
+    ...p,
+    ...props
+  });
+
+  const messages = props
+    .messages
+    .toJS()
+    .map((message, i) => (
+      <p key={i}>
+        <button onClick={props.onRemove.bind(this, i)}> X </button>
+        <span> &emsp; </span>
+        <Message {...mergeProps(message, i)} />
+      </p>
+    ));
+
+  const style = {
+    border: '1pt solid',
+    margin: '3%',
+    padding: '3%'
+  };
+
+  return (
+    <div style={style}>
+      <a href='#' onClick={props.onRemoveAll}>
+        Delete All
+      </a>
+      <h2> { messages.length } Unread messages: </h2>
+      { messages }
+    </div>
+  );
+}, { displayName: 'Messages' });

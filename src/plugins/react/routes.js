@@ -2,12 +2,13 @@ export default {
   clickedTestButton: [
     (state, ctx) => {
       ctx.changed = true;
+
       return {
         msgs: [
           ...state.msgs,
           {
-            subject: 'duuude',
-            body: 'suupppp?'
+            subject: 'lets get lunch',
+            body: 'yo dude wanna get lunch later?'
           }
         ]
       };

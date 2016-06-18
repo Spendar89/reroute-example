@@ -2,16 +2,23 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
 import Root from './components/Root';
-//import router from 'reroute-core';
-import { router } from '../../reroute-core';
+import { Router, createProvider } from '../../reroute-core';
 import store from './store';
 import * as plugins from 'plugins';
 
-router.registerStore(store);
-router.registerPlugins(plugins)
+const router = new Router({ store, plugins });
 
-const App = Root =>
-  <AppContainer><Root/></AppContainer>;
+const App = Root => {
+  const Provider = createProvider(router);
+
+  return (
+    <AppContainer>
+      <Provider>
+        <Root/>
+      </Provider>
+    </AppContainer>
+  );
+};
 
 ReactDOM.render(
   App(Root),
