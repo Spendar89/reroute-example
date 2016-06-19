@@ -1,5 +1,4 @@
 import Messages from './Messages';
-import React from 'react';
 
 export default () => (
   <div>

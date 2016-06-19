@@ -1,5 +1,3 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
 import Root from './components/Root';
 import { createProvider } from '../../reroute-core';
