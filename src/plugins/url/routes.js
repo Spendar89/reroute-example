@@ -1,11 +1,24 @@
 export default {
-  '/test-route': (state, ctx) => {
-    console.log('new url route event 1', ctx);
-    return { currentUrl: ctx.key };
-  },
+  '/': (state, { payload }) => {
+    const { location } = payload;
 
-  '/test-route-2': (state, ctx) => {
-    console.log('new url route event 2', ctx);
-    return { currentUrl: ctx.key };
+    console.info('match route root', location)
+
+    return { location };
+  },
+  '/test_route_1': (state, ctx) => {
+    console.info('match route 1');
+
+    return { foo: 'bar-1' }
+  },
+  '/test_route_2': (state, ctx) => {
+    console.info('match route 2');
+
+    return { foo: 'bar-2' };
+  },
+  '/test_route_1/:dude/dude': (state, ctx) => {
+    console.info('match route dude');
+
+    return { foo: 'bar-2' };
   }
 };

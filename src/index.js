@@ -1,7 +1,7 @@
+import { createProvider } from '../../reroute-core';
 import { AppContainer } from 'react-hot-loader';
 import Root from './components/Root';
-import { createProvider } from '../../reroute-core';
-import store from './store';
+import store from 'store';
 import * as plugins from 'plugins';
 
 const App = Root => {
@@ -25,14 +25,12 @@ ReactDOM.render(
 );
 
 if (module.hot) {
-  module.hot.accept(
-    './components/Root', _ => {
-      const Root = require('./components/Root').default;
+  module.hot.accept('./components/Root', () => {
+    const Root = require('./components/Root').default;
 
-      ReactDOM.render(
-        App(Root),
-        document.getElementById('root')
-      );
-    }
-  );
+    ReactDOM.render(
+      App(Root),
+      document.getElementById('root')
+    );
+  });
 };

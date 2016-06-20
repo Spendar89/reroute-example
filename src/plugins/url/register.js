@@ -18,28 +18,21 @@ export default function register (router) {
     return obj || {};
   };
 
-  const onUrlChange = (e = {}) => {
-    const state = e.state || {},
-      // state.payload comes from
-      // corresponding url event
-      payload = state.payload || {},
-      { pathname, search } = window.location,
-      params = urlSearchToObj(search);
+  const byPath = (key, payload={}) => ({
+    key,
+    payload,
+    type:'url'
+  });
 
-    // trigger url event if current
-    // pathname matches a url route
-    for (let key in routes) {
-      if (pathname === key) {
-        router.route({
-          key,
-          type: 'url',
-          payload: {
-            ...payload,
-            ...params
-          }
-        });
-      };
-    };
+  const onUrlChange = () => {
+    //const state = e.state || {};
+    // state.payload comes from
+    // corresponding url event
+    //payload = state.payload || {},
+    const { location } = window;
+    const { pathname, search } = location;
+    //const params = urlSearchToObj(search);
+    router.route(byPath(pathname, { location }));
   };
 
   // TODO: add payload to url search params

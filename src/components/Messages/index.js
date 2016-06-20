@@ -50,7 +50,7 @@ export default connect(mapStateToProps, mapRouteToProps)(props => {
       <p key={i}>
         <button onClick={props.onRemove.bind(this, i)}> X </button>
         <span> &emsp; </span>
-        <Message {...mergeProps(message, i)} />
+        <Message {...{...message, onClick: props.onClick}} />
       </p>
     ));
 

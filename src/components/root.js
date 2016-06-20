@@ -1,8 +1,9 @@
-import Messages from './Messages';
+import CurrentPage from './CurrentPage';
 
-export default () => (
-  <div>
-    <Messages key='1' path='msgs'/>
-    <Messages key='2' path='msgs'/>
-  </div>
-);
+export default function Root () {
+  return (
+    <div>
+      <CurrentPage />
+    </div>
+  );
+};
