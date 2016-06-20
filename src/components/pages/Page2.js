@@ -1,3 +1,3 @@
-export default function Page2 ({ title }) {
-  return <h1> {title} Page 2222</h1>;
+export default function ({ title }) {
+  return <h1> {title} Page2 </h1>;
 };

@@ -7,9 +7,10 @@ export default {
     }
   ],
   currentUrl: 'default',
-  pages: {
-    'test_route_2': { title: 'Dude Im Test Route 2' },
-    'test_route_1': { title: 'Dude Im Test Route' },
-    'default': { title: 'Default Page Fucker' }
-  }
+  pages: [
+    { title: 'PAGE-ID 0' },
+    { title: 'PAGE-ID 1' },
+    { title: 'PAGE-ID 2' },
+    { title: 'PAGE-ID 3' }
+  ]
 };

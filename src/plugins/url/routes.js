@@ -1,10 +1,8 @@
 export default {
-  '/': (state, { payload }) => {
-    const { location } = payload;
+  '/': (state, { payload, key }) => {
+    console.info('match route root', payload);
 
-    console.info('match route root', location)
-
-    return { location };
+    return { currentUrl: key.substr(1), ...payload };
   },
   '/test_route_1': (state, ctx) => {
     console.info('match route 1');
