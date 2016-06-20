@@ -1,11 +1,9 @@
 export default {
   test: 'coolio',
-  msgs: [
-    {
-      subject: 'Welcome to your messages',
-      body: 'This is your first message!'
-    }
-  ],
+  msgs: [{
+    subject: 'Welcome to your messages',
+    body: 'This is your first message!'
+  }],
   currentUrl: 'default',
   pages: [
     { title: 'PAGE-ID 0' },
