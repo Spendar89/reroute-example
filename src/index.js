@@ -2,7 +2,7 @@ import { createProvider } from '../../reroute-core';
 import { AppContainer } from 'react-hot-loader';
 import Root from './components/Root';
 import store from 'store';
-import * as plugins from 'plugins';
+import { plugins } from '../../reroute-core';
 
 const App = Root => {
   const Provider = createProvider({

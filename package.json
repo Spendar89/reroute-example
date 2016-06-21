@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "Jake Sendar's personal web app",
   "scripts": {
-    "start": "node server.js",
+    "start": "npm install && node server.js",
     "lint": "eslint src",
     "test": "mocha --compilers js:babel-register --recursive",
     "test:watch": "npm test -- --watch"
